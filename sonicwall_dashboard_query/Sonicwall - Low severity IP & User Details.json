@@ -1,0 +1,94 @@
+{
+  "queries": {
+    "aggs": {
+      "2": {
+        "terms": {
+          "field": "ipscat.keyword",
+          "order": {
+            "_count": "desc"
+          },
+          "size": 10
+        },
+        "aggs": {
+          "3": {
+            "terms": {
+              "field": "source_ip.keyword",
+              "order": {
+                "_count": "desc"
+              },
+              "size": 10
+            },
+            "aggs": {
+              "4": {
+                "terms": {
+                  "field": "destination_ip.keyword",
+                  "order": {
+                    "_count": "desc"
+                  },
+                  "size": 10
+                },
+                "aggs": {
+                  "5": {
+                    "terms": {
+                      "field": "usr.keyword",
+                      "order": {
+                        "_count": "desc"
+                      },
+                      "size": 10
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "size": 0,
+    "stored_fields": [
+      "*"
+    ],
+    "script_fields": {},
+    "docvalue_fields": [
+      {
+        "field": "@timestamp",
+        "format": "date_time"
+      }
+    ],
+    "_source": {
+      "excludes": []
+    },
+    "query": {
+      "bool": {
+        "must": [
+          {
+            "match_all": {}
+          }
+        ],
+        "filter": [
+          {
+            "match_phrase": {
+              "IPS Severity Type.keyword": "Low"
+            }
+          },
+          {
+            "exists": {
+              "field": "ipscat.keyword"
+            }
+          },
+          {
+            "range": {
+              "@timestamp": {
+                "gte": "2021-01-18T16:24:13.036Z",
+                "lte": "2021-04-18T16:24:13.036Z",
+                "format": "strict_date_optional_time"
+              }
+            }
+          }
+        ],
+        "should": [],
+        "must_not": []
+      }
+    }
+  }
+}

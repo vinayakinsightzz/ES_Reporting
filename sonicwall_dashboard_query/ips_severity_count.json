@@ -1,0 +1,72 @@
+{
+  "queries":{
+  "aggs": {
+    "2": {
+      "terms": {
+        "field": "IPS Severity Type.keyword",
+        "order": {
+          "_count": "desc"
+        },
+        "size": 5
+      }
+    }
+  },
+  "size": 0,
+  "stored_fields": [
+    "*"
+  ],
+  "script_fields": {},
+  "docvalue_fields": [
+    {
+      "field": "@timestamp",
+      "format": "date_time"
+    }
+  ],
+  "_source": {
+    "excludes": []
+  },
+  "query": {
+    "bool": {
+      "must": [],
+      "filter": [
+        {
+          "match_all": {}
+        },
+        {
+          "exists": {
+            "field": "ipscat.keyword"
+          }
+        },
+        {
+          "bool": {
+            "should": [
+              {
+                "match_phrase": {
+                  "IPS Severity Type.keyword": "High"
+                }
+              },
+              {
+                "match_phrase": {
+                  "IPS Severity Type.keyword": "Medium"
+                }
+              }
+            ],
+            "minimum_should_match": 1
+          }
+        },
+        {
+          "range": {
+            "@timestamp": {
+              "gte": "2021-05-29T13:07:45.428Z",
+              "lte": "2021-05-29T13:22:45.428Z",
+              "format": "strict_date_optional_time"
+            }
+          }
+        }
+      ],
+      "should": [],
+      "must_not": []
+    }
+  }
+}
+}
